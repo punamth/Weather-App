@@ -11,21 +11,21 @@ const WeatherCard: React.FC<WeatherProps> = ({ location, useCoords = false }) =>
   const [loading, setLoading] = useState<boolean>(false);
 
   const fetchWeather = async () => {
-    setLoading(true);
-    try {
-      const encodedLocation = useCoords ? location : encodeURIComponent(location);
-      const response = await fetch(
-        `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${encodedLocation}?unitGroup=metric&key=MW3BEMGEF939H7H3V2WGGM9Q5&include=hours,current`
-      );
+  setLoading(true);
+  try {
+    const encodedLocation = useCoords ? location : encodeURIComponent(location);
+    const apiKey = import.meta.env.VITE_WEATHER_API_KEY;
+    const response = await fetch(
+      `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${encodedLocation}?unitGroup=metric&key=${apiKey}&include=hours,current`
+    );
 
-      if (!response.ok) {
+    if (!response.ok) {
       throw new Error('Failed to fetch weather data');
     }
 
     const data = await response.json();
     setWeatherData(data);
     setError(null);
-
   } catch (error) {
     console.error('Weather fetch error:', error);
     setError('Could not load weather data.');
@@ -33,6 +33,7 @@ const WeatherCard: React.FC<WeatherProps> = ({ location, useCoords = false }) =>
     setLoading(false);
   }
 };
+
 
   useEffect(() => {
     fetchWeather();
